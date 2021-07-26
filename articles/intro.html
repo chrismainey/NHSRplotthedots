@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">NHSRplotthedots</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
       </span>
     </div>
 
@@ -123,32 +123,21 @@
   <span class="va">ae_attendances</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">org_code</span> <span class="op">==</span> <span class="st">'RRK'</span> <span class="op">&amp;</span> <span class="va">type</span> <span class="op">==</span><span class="fl">1</span> <span class="op">&amp;</span> <span class="va">period</span> <span class="op">&lt;</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html">as.Date</a></span><span class="op">(</span><span class="st">'2018-04-01'</span><span class="op">)</span><span class="op">)</span>
 
-<span class="fu"><a href="../reference/spc.html">spc</a></span><span class="op">(</span><span class="va">stable_set</span>, valueField <span class="op">=</span> <span class="st">"breaches"</span>, dateField <span class="op">=</span> <span class="st">"period"</span>, options <span class="op">=</span> <span class="fu"><a href="../reference/spcOptions.html">spcOptions</a></span><span class="op">(</span>improvementDirection <span class="op">=</span> <span class="st">"decrease"</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; Warning: Removed 24 row(s) containing missing values (geom_path).</span>
-
-<span class="co">#&gt; Warning: Removed 24 row(s) containing missing values (geom_path).</span>
-<span class="co">#&gt; Warning: Removed 16 rows containing missing values (geom_point).</span>
-<span class="co">#&gt; Warning: Removed 24 rows containing missing values (geom_point).</span></code></pre></div>
+<span class="fu"><a href="../reference/spc.html">spc</a></span><span class="op">(</span><span class="va">stable_set</span>, valueField <span class="op">=</span> <span class="st">"breaches"</span>, dateField <span class="op">=</span> <span class="st">"period"</span>, improvementDirection <span class="op">=</span> <span class="st">"decrease"</span><span class="op">)</span></code></pre></div>
 <p><img src="intro_files/figure-html/stableperiod-1.png" width="672"></p>
 <p>From the chart above, we can see the centre line (mean) and the control limits calculated according the the XmR chart rules. Our points that are between the control limits are within control and showing ‘common-cause’ or ‘natural’ variation. We can see 8 sequential points coloured in yellow. This is triggered by a rule that looks for &gt;=7 points on one side of the mean. This could be viewed as a period where fewer breaches than average were detected, which may hold some learning value for the organisation.</p>
 </div>
 <div id="change-point" class="section level2">
 <h2 class="hasAnchor">
 <a href="#change-point" class="anchor"></a>Change point</h2>
-<p>From the first plot above, we can see that the change is noticed at 01/07/2019. We understand the reason for the change (the merging of several trusts), and believe this will be the new normal range for the process, so it would be valid to rebase at this point. To rebase (change the modelling period for control limits), we need to set a binary flag here in our data (achieved with the <code>mutate</code> statement below). We’ve now got an extra column, all set to 0, except 01/07/2019, which is set to 1 to trigger the rebase here. This is then passed to the <code>options</code> argument. You can pass a list with the named elements to <code>options</code>, but it’s probably best to use the helper function <code>spcOptions</code>. You can view the help file, and see what the options are using: <code><a href="../reference/spcOptions.html">?spcOptions</a></code>.</p>
+<p>From the first plot above, we can see that the change is noticed at 01/07/2019. We understand the reason for the change (the merging of several trusts), and believe this will be the new normal range for the process, so it would be valid to rebase at this point. To rebase (change the modelling period for control limits), we need to set a binary flag here in our data (achieved with the <code>mutate</code> statement below). We’ve now got an extra column, all set to 0, except 01/07/2019, which is set to 1 to trigger the rebase here. This is then passed to the <code>options</code> argument. You can pass a list with the named elements to <code>options</code>, but it’s probably best to use the helper function <code>spcOptions</code>. You can view the help file, and see what the options are using: <code>?spcOptions</code>.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">change_set</span> <span class="op">&lt;-</span> 
   <span class="va">ae_attendances</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">org_code</span> <span class="op">==</span> <span class="st">'RRK'</span> <span class="op">&amp;</span> <span class="va">type</span> <span class="op">==</span><span class="fl">1</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>rebased <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">period</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html">as.Date</a></span><span class="op">(</span><span class="st">"2018-07-01"</span><span class="op">)</span>, <span class="fl">1</span> , <span class="fl">0</span><span class="op">)</span><span class="op">)</span>
 
-
-<span class="fu"><a href="../reference/spc.html">spc</a></span><span class="op">(</span><span class="va">change_set</span>, valueField <span class="op">=</span> <span class="st">"breaches"</span>, dateField <span class="op">=</span> <span class="st">"period"</span>, options <span class="op">=</span> <span class="fu"><a href="../reference/spcOptions.html">spcOptions</a></span><span class="op">(</span>improvementDirection <span class="op">=</span> <span class="st">"decrease"</span>, rebase <span class="op">=</span> <span class="st">"rebased"</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; Warning: Removed 36 row(s) containing missing values (geom_path).</span>
-
-<span class="co">#&gt; Warning: Removed 36 row(s) containing missing values (geom_path).</span>
-<span class="co">#&gt; Warning: Removed 25 rows containing missing values (geom_point).</span>
-<span class="co">#&gt; Warning: Removed 33 rows containing missing values (geom_point).</span></code></pre></div>
+<span class="fu"><a href="../reference/spc.html">spc</a></span><span class="op">(</span><span class="va">change_set</span>, valueField <span class="op">=</span> <span class="st">"breaches"</span>, dateField <span class="op">=</span> <span class="st">"period"</span>, improvementDirection <span class="op">=</span> <span class="st">"decrease"</span>, rebase <span class="op">=</span> <span class="st">"rebased"</span><span class="op">)</span></code></pre></div>
 <p><img src="intro_files/figure-html/changepoint-1.png" width="672"></p>
 <p>You can see that our limit calculation has now shifted at the rebase point.</p>
 </div>
@@ -160,16 +149,14 @@
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">facet_set</span> <span class="op">&lt;-</span> 
   <span class="va">ae_attendances</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">org_code</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'RRK'</span>, <span class="st">'RJC'</span>, <span class="st">'RJ7'</span>, <span class="st">'R1K'</span>, <span class="st">'R1H'</span>, <span class="st">'RQM'</span><span class="op">)</span> <span class="op">&amp;</span> <span class="va">type</span> <span class="op">==</span><span class="fl">1</span><span class="op">&amp;</span> <span class="va">period</span> <span class="op">&lt;</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html">as.Date</a></span><span class="op">(</span><span class="st">'2018-04-01'</span><span class="op">)</span><span class="op">)</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">org_code</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'RRK'</span>, <span class="st">'RJC'</span>, <span class="st">'RJ7'</span>, <span class="st">'R1K'</span>, <span class="st">'R1H'</span>, <span class="st">'RQM'</span><span class="op">)</span>,
+         <span class="va">type</span> <span class="op">==</span> <span class="fl">1</span>,
+         <span class="va">period</span> <span class="op">&lt;</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html">as.Date</a></span><span class="op">(</span><span class="st">'2018-04-01'</span><span class="op">)</span><span class="op">)</span>
 
 
-<span class="fu"><a href="../reference/spc.html">spc</a></span><span class="op">(</span><span class="va">facet_set</span>, valueField <span class="op">=</span> <span class="st">"breaches"</span>, dateField <span class="op">=</span> <span class="st">"period"</span>, facetField <span class="op">=</span> <span class="st">"org_code"</span>
-    , options <span class="op">=</span> <span class="fu"><a href="../reference/spcOptions.html">spcOptions</a></span><span class="op">(</span>improvementDirection <span class="op">=</span> <span class="st">"decrease"</span>, fixedYAxisMultiple <span class="op">=</span> <span class="cn">FALSE</span>, xAxisBreaks <span class="op">=</span> <span class="st">"3 months"</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; Warning: Removed 144 row(s) containing missing values (geom_path).</span>
-
-<span class="co">#&gt; Warning: Removed 144 row(s) containing missing values (geom_path).</span>
-<span class="co">#&gt; Warning: Removed 94 rows containing missing values (geom_point).</span>
-<span class="co">#&gt; Warning: Removed 122 rows containing missing values (geom_point).</span></code></pre></div>
+<span class="fu"><a href="../reference/spc.html">spc</a></span><span class="op">(</span><span class="va">facet_set</span>, valueField <span class="op">=</span> <span class="st">"breaches"</span>, dateField <span class="op">=</span> <span class="st">"period"</span>, facetField <span class="op">=</span> <span class="st">"org_code"</span>,
+    improvementDirection <span class="op">=</span> <span class="st">"decrease"</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span>fixedYAxisMultiple <span class="op">=</span> <span class="cn">FALSE</span>, xAxisBreaks <span class="op">=</span> <span class="st">"3 months"</span><span class="op">)</span></code></pre></div>
 <p><img src="intro_files/figure-html/facetvignette-1.png" width="672"></p>
 </div>
 <div id="come-and-join-us" class="section level2">

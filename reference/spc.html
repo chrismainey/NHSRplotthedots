@@ -47,7 +47,7 @@
 
 
 <meta property="og:title" content="SPC Plotting Function — spc" />
-<meta property="og:description" content="`spc` returns a plot object or data table with SPC values using NHSI 'plot the dots' logic." />
+<meta property="og:description" content="spc returns a plot object or data table with SPC values using NHSI 'plot the dots' logic." />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -80,7 +80,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">NHSRplotthedots</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
       </span>
     </div>
 
@@ -129,10 +129,20 @@
     </div>
 
     <div class="ref-description">
-    <p>`spc` returns a plot object or data table with SPC values using NHSI 'plot the dots' logic.</p>
+    <p><code>spc</code> returns a plot object or data table with SPC values using NHSI 'plot the dots' logic.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>spc</span><span class='op'>(</span><span class='va'>.data</span>, <span class='va'>valueField</span>, <span class='va'>dateField</span>, facetField <span class='op'>=</span> <span class='cn'>NULL</span>, options <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>spc</span><span class='op'>(</span>
+  <span class='va'>.data</span>,
+  <span class='va'>valueField</span>,
+  <span class='va'>dateField</span>,
+  facetField <span class='op'>=</span> <span class='cn'>NULL</span>,
+  rebase <span class='op'>=</span> <span class='cn'>NULL</span>,
+  fixAfterNPoints <span class='op'>=</span> <span class='cn'>NULL</span>,
+  improvementDirection <span class='op'>=</span> <span class='st'>"increase"</span>,
+  target <span class='op'>=</span> <span class='cn'>NULL</span>,
+  trajectory <span class='op'>=</span> <span class='cn'>NULL</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -156,20 +166,42 @@ Field name can be specified using non-standard evaluation (i.e. no quotation mar
     <tr>
       <th>facetField</th>
       <td><p>Optional: Specify field name which contains a grouping/faceting variable. SPC logic will be applied
-    to each group separately, with outputs combined. Currently accepts 1 variable only.
+to each group separately, with outputs combined. Currently accepts 1 variable only.
 Field name can be specified using non-standard evaluation (i.e. no quotation marks).</p></td>
     </tr>
     <tr>
-      <th>options</th>
-      <td><p>Optional: A list object containing additional control and formatting properties. Preferably created
-using the spcOptions function.</p></td>
+      <th>rebase</th>
+      <td><p>Specify a field name which contains a control limit rebasing flag.
+This field should contain integer values 0 and 1, and any date value where the rebase field is 1 will
+trigger a recalculation of the control limits.
+Field name can be specified using non-standard evaluation (i.e. no quotation marks).</p></td>
+    </tr>
+    <tr>
+      <th>fixAfterNPoints</th>
+      <td><p>Specify a number points after which to fix SPC calculations.</p></td>
+    </tr>
+    <tr>
+      <th>improvementDirection</th>
+      <td><p>Specify whether an increase or decrease in measured variable signifies
+process improvement. Accepted values are 'increase' for increase as improvement or 'decrease' for
+decrease as improvement. Defaults to 'increase'.</p></td>
+    </tr>
+    <tr>
+      <th>target</th>
+      <td><p>Specify a field name which contains a target value.
+Field name can be specified using non-standard evaluation (i.e. no quotation marks).</p></td>
+    </tr>
+    <tr>
+      <th>trajectory</th>
+      <td><p>Specify a field name which contains a trajectory value.
+Field name can be specified using non-standard evaluation (i.e. no quotation marks).</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A ggplot2 object of the spc charts.  This will automatically print the plot, but can also be saved as an
-    object if you want to manipulate it further.</p>
+object if you want to manipulate it further.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>This function is designed to produce consistent SPC charts
@@ -185,33 +217,26 @@ logic produced by NHSI. The function can return either a plot or data frame.</p>
 
 <span class='co'># Basic chart with improvement direction decreasing</span>
 <span class='fu'>spc</span><span class='op'>(</span><span class='va'>trust1</span>,
-  valueField <span class='op'>=</span> <span class='st'>"breaches"</span>, dateField <span class='op'>=</span> <span class='st'>"period"</span>,
-  options <span class='op'>=</span> <span class='fu'><a href='spcOptions.html'>spcOptions</a></span><span class='op'>(</span>improvementDirection <span class='op'>=</span> <span class='st'>"decrease"</span><span class='op'>)</span>
-<span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 36 row(s) containing missing values (geom_path).</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 36 row(s) containing missing values (geom_path).</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 20 rows containing missing values (geom_point).</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 18 rows containing missing values (geom_point).</span></div><div class='img'><img src='spc-1.png' alt='' width='700' height='433' /></div><div class='input'>
-
+    valueField <span class='op'>=</span> <span class='st'>"breaches"</span>, dateField <span class='op'>=</span> <span class='st'>"period"</span>,
+    improvementDirection <span class='op'>=</span> <span class='st'>"decrease"</span><span class='op'>)</span>
+</div><div class='img'><img src='spc-1.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'># Pick a few trust, and plot individually using facet</span>
 <span class='co'># Also set the x-axis scale to vary for each and date groups to 3 months</span>
 <span class='va'>orgs</span> <span class='op'>&lt;-</span> <span class='va'>ae_attendances</span><span class='op'>$</span><span class='va'>org_code</span> <span class='op'>%in%</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"RAS"</span>, <span class='st'>"RJZ"</span>, <span class='st'>"RR1"</span>, <span class='st'>"RJC"</span>, <span class='st'>"RQ1"</span><span class='op'>)</span>
 <span class='va'>trusts4</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/subset.html'>subset</a></span><span class='op'>(</span><span class='va'>ae_attendances</span>, <span class='va'>orgs</span> <span class='op'>&amp;</span> <span class='va'>type</span> <span class='op'>==</span> <span class='fl'>1</span><span class='op'>)</span>
 
-<span class='fu'>spc</span><span class='op'>(</span><span class='va'>trusts4</span>,
-  valueField <span class='op'>=</span> <span class='st'>"breaches"</span>, dateField <span class='op'>=</span> <span class='st'>"period"</span>, facetField <span class='op'>=</span> <span class='st'>"org_code"</span>,
-  options <span class='op'>=</span> <span class='fu'><a href='spcOptions.html'>spcOptions</a></span><span class='op'>(</span>
-    improvementDirection <span class='op'>=</span> <span class='st'>"decrease"</span>,
-    fixedYAxisMultiple <span class='op'>=</span> <span class='cn'>FALSE</span>,
-    xAxisBreaks <span class='op'>=</span> <span class='st'>"3 months"</span>
-  <span class='op'>)</span>
-<span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 135 row(s) containing missing values (geom_path).</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 135 row(s) containing missing values (geom_path).</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 79 rows containing missing values (geom_point).</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 90 rows containing missing values (geom_point).</span></div><div class='img'><img src='spc-2.png' alt='' width='700' height='433' /></div><div class='input'>
-
+<span class='va'>s</span> <span class='op'>&lt;-</span> <span class='fu'>spc</span><span class='op'>(</span><span class='va'>trusts4</span>,
+         valueField <span class='op'>=</span> <span class='st'>"breaches"</span>, dateField <span class='op'>=</span> <span class='st'>"period"</span>, facetField <span class='op'>=</span> <span class='st'>"org_code"</span>,
+         improvementDirection <span class='op'>=</span> <span class='st'>"decrease"</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>s</span>, fixedYAxisMultiple <span class='op'>=</span> <span class='cn'>FALSE</span>, xAxisBreaks <span class='op'>=</span> <span class='st'>"3 months"</span><span class='op'>)</span>
+</div><div class='img'><img src='spc-2.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'># Save the first chart as an object this time then alter the ggplot theme</span>
 <span class='va'>my_spc</span> <span class='op'>&lt;-</span> <span class='fu'>spc</span><span class='op'>(</span><span class='va'>trust1</span>,
-  valueField <span class='op'>=</span> <span class='st'>"breaches"</span>, dateField <span class='op'>=</span> <span class='st'>"period"</span>,
-  options <span class='op'>=</span> <span class='fu'><a href='spcOptions.html'>spcOptions</a></span><span class='op'>(</span>improvementDirection <span class='op'>=</span> <span class='st'>"decrease"</span><span class='op'>)</span>
-<span class='op'>)</span>
-<span class='va'>my_spc</span> <span class='op'>+</span> <span class='fu'>ggplot2</span><span class='fu'>::</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggtheme.html'>theme_classic</a></span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 36 row(s) containing missing values (geom_path).</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 36 row(s) containing missing values (geom_path).</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 20 rows containing missing values (geom_point).</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 18 rows containing missing values (geom_point).</span></div><div class='img'><img src='spc-3.png' alt='' width='700' height='433' /></div></pre>
+              valueField <span class='op'>=</span> <span class='st'>"breaches"</span>, dateField <span class='op'>=</span> <span class='st'>"period"</span>,
+              improvementDirection <span class='op'>=</span> <span class='st'>"decrease"</span><span class='op'>)</span>
+
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>my_spc</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'>ggplot2</span><span class='fu'>::</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggtheme.html'>theme_classic</a></span><span class='op'>(</span><span class='op'>)</span>
+</div><div class='img'><img src='spc-3.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
