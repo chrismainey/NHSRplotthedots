@@ -92,7 +92,7 @@
 <p><strong><em>This vignette is a work in progress, feel free to contribute on NHS-R GitHub</em></strong></p>
 <p>Welcome to the NHS-R community’s collaborative package for building a specific type of statistical process control (SPC) chart, the XmR chart. We are aiming to support the NHS England and NHS Improvement’s ‘Making Data Count’ programme, please see <a href="https://www.england.nhs.uk/a-focus-on-staff-health-and-wellbeing/publications-and-resources/making-data-count/"> here </a> for more details. The programme encourages boards, managers, and analyst teams to present data in ways that show change over time, and drive better understanding of indicators than ‘RAG’ (red, amber, green) rated board reports often present.</p>
 <p>This tutorial is a concise take on applying the function to some Accident and Emergency breach data for some NHS hospitals. We’ll take this from the <code>NHSRdatasets</code> package, another of our packages providing example datasets for training in an NHS/healthcare context.</p>
-<p>The analyses below use the <code>tidyverse</code> packages: <code>dplyr</code> to manipulate the data, and <code>gggplot2</code> for plotting (when not using <code>NHSRplotthedots</code>).</p>
+<p>The analyses below use the <code>tidyverse</code> packages: <code>dplyr</code> to manipulate the data, and <code>ggplot2</code> for plotting (when not using <code>NHSRplotthedots</code>).</p>
 <p>Firstly, lets load the data, filter for University Hospital Birmingham NHS Foundation Trust, because they are a good example for the type of charts below. Let’s also do a simple timeseries plot to see why this is the case.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://nhs-r-community.github.io/NHSRplotthedots/">NHSRplotthedots</a></span><span class="op">)</span>
@@ -114,7 +114,7 @@
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <p><img src="intro_files/figure-html/dataset-1.png" width="672"></p>
 <p>This minimal plot shows the changes over time, and we will look at it in two ways. The first, we’ll look at 2016/17 &amp; 2017/18, which is apparently stable and, during 2018, the trust merged with another large 3-hospital provider trust, so the numbers through A&amp;E shot up dramatically when combined under one trust code. We can use a change point in our plots to consider this.</p>
-<p>Let’s now use the <code>spc</code> function to draw our plot. We need to provide it with a <code>data.frame</code> that contains our data, and provide a <code>valueField</code> for the y-axis, and a <code>dateField</code> for the x-axis. Remember to surround the names of the columns in the <code>data.frame</code> with quotes (making it a string, see below). In addition, to ensure the points are coloured correctly, we need to set the improvement direction to “decrease” using the <code>options</code> parameter.</p>
+<p>Let’s now use the <code>ptd_spc</code> function to draw our plot. We need to provide it with a <code>data.frame</code> that contains our data, and provide a <code>value_field</code> for the y-axis, and a <code>date_field</code> for the x-axis. Remember to surround the names of the columns in the <code>data.frame</code> with quotes (making it a string, see below). In addition, to ensure the points are coloured correctly, we need to set the <code>improvement_direction</code> to “decrease”, here (as fewer A&amp;E breaches is better).</p>
 <div id="stable-period" class="section level2">
 <h2 class="hasAnchor">
 <a href="#stable-period" class="anchor"></a>Stable period</h2>
@@ -130,22 +130,23 @@
 <div id="change-point" class="section level2">
 <h2 class="hasAnchor">
 <a href="#change-point" class="anchor"></a>Change point</h2>
-<p>From the first plot above, we can see that the change is noticed at 01/07/2019. We understand the reason for the change (the merging of several trusts), and believe this will be the new normal range for the process, so it would be valid to rebase at this point. To rebase (change the modelling period for control limits), we need to set a binary flag here in our data (achieved with the <code>mutate</code> statement below). We’ve now got an extra column, all set to 0, except 01/07/2019, which is set to 1 to trigger the rebase here. This is then passed to the <code>options</code> argument. You can pass a list with the named elements to <code>options</code>, but it’s probably best to use the helper function <code>spcOptions</code>. You can view the help file, and see what the options are using: <code>?spcOptions</code>.</p>
+<p>From the first plot above, we can see that the change is noticed at 01/07/2019. We understand the reason for the change (the merging of two trusts), and believe this will be the new normal range for the process, so it would be valid to rebase at this point. To rebase (change the modelling period for control limits), we need to set a binary flag here in our data (achieved with the <code>mutate</code> statement below). We’ve now got an extra column, all set to 0, except 01/07/2019, which is set to 1 to trigger the rebase here. This is then passed to the <code>rebase</code> argument.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">change_set</span> <span class="op">&lt;-</span> 
   <span class="va">ae_attendances</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">org_code</span> <span class="op">==</span> <span class="st">'RRK'</span> <span class="op">&amp;</span> <span class="va">type</span> <span class="op">==</span><span class="fl">1</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>rebased <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">period</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html">as.Date</a></span><span class="op">(</span><span class="st">"2018-07-01"</span><span class="op">)</span>, <span class="fl">1</span> , <span class="fl">0</span><span class="op">)</span><span class="op">)</span>
 
-<span class="fu"><a href="../reference/ptd_spc.html">ptd_spc</a></span><span class="op">(</span><span class="va">change_set</span>, value_field <span class="op">=</span> <span class="st">"breaches"</span>, date_field <span class="op">=</span> <span class="st">"period"</span>, improvement_direction <span class="op">=</span> <span class="st">"decrease"</span>, rebase <span class="op">=</span> <span class="st">"rebased"</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="../reference/ptd_spc.html">ptd_spc</a></span><span class="op">(</span><span class="va">change_set</span>, value_field <span class="op">=</span> <span class="st">"breaches"</span>, date_field <span class="op">=</span> <span class="st">"period"</span>
+        , improvement_direction <span class="op">=</span> <span class="st">"decrease"</span>, rebase <span class="op">=</span> <span class="st">"rebased"</span><span class="op">)</span></code></pre></div>
 <p><img src="intro_files/figure-html/changepoint-1.png" width="672"></p>
 <p>You can see that our limit calculation has now shifted at the rebase point.</p>
 </div>
 <div id="faceting" class="section level2">
 <h2 class="hasAnchor">
 <a href="#faceting" class="anchor"></a>Faceting</h2>
-<p>In <code>R</code> <code>ggplot2</code> system, <code>facet</code> refers to splitting or plotting by variables, into separate plots or regions. Imagine you want to do an SPC for all trusts in a dataset, or all specialties at a trust. Facet will help you do this, and you can pass the field that controls this to the <code>spc</code> argument <code>facetField</code>.</p>
-<p>Here we will pick 6 trusts at random and plot their breaches, faceting across them. We’ll also combine this with a couple more <code>options</code>: letting the x-axis scale for each plot (otherwise some would look crushed against a larger trusts, and changing the x-axis breaks to 3-months, as 1 month looked too busy.)</p>
+<p>In <code>R</code> <code>ggplot2</code> system, <code>facet</code> refers to splitting or plotting by variables, into separate plots or regions. Imagine you want to do an SPC for all trusts in a dataset, or all specialties at a trust. Facet will help you do this, and you can pass the field that controls this to the <code>ptd_spc</code> argument <code>facet_field</code>.</p>
+<p>Here we will pick 6 trusts at random and plot their breaches, faceting across them. We’ll also combine this with a couple more options that are specific to the plot. This is done with the <code>ptd_create_ggplot</code> function in the backend, but also works with the generic <code>plot</code>. To find out the available options, see the help-file for: <code><a href="../reference/ptd_create_ggplot.html">?ptd_create_ggplot</a></code>. We will let the x-axis scale change for each plot for each plot (otherwise some would look crushed against a larger trusts) and we will also change the x-axis breaks to 3-months, as 1 month looked too busy.)</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">facet_set</span> <span class="op">&lt;-</span> 
   <span class="va">ae_attendances</span> <span class="op">%&gt;%</span> 
@@ -157,7 +158,38 @@
 <span class="fu"><a href="../reference/ptd_spc.html">ptd_spc</a></span><span class="op">(</span><span class="va">facet_set</span>, value_field <span class="op">=</span> <span class="st">"breaches"</span>, date_field <span class="op">=</span> <span class="st">"period"</span>, facet_field <span class="op">=</span> <span class="st">"org_code"</span>,
     improvement_direction <span class="op">=</span> <span class="st">"decrease"</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span>fixed_y_axis_multiple <span class="op">=</span> <span class="cn">FALSE</span>, x_axis_breaks <span class="op">=</span> <span class="st">"3 months"</span><span class="op">)</span></code></pre></div>
-<p><img src="intro_files/figure-html/facetvignette-1.png" width="672"></p>
+<p><img src="intro_files/figure-html/facetvignette-1.png" width="672"> From this, the point-size seems too big, and it would be worth replacing the y-axis title with something better. Again, this is done with the <code>plot</code> function arguments:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">facet_set</span> <span class="op">&lt;-</span> 
+  <span class="va">ae_attendances</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">org_code</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'RRK'</span>, <span class="st">'RJC'</span>, <span class="st">'RJ7'</span>, <span class="st">'R1K'</span>, <span class="st">'R1H'</span>, <span class="st">'RQM'</span><span class="op">)</span>,
+         <span class="va">type</span> <span class="op">==</span> <span class="fl">1</span>,
+         <span class="va">period</span> <span class="op">&lt;</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html">as.Date</a></span><span class="op">(</span><span class="st">'2018-04-01'</span><span class="op">)</span><span class="op">)</span>
+
+
+<span class="fu"><a href="../reference/ptd_spc.html">ptd_spc</a></span><span class="op">(</span><span class="va">facet_set</span>, value_field <span class="op">=</span> <span class="st">"breaches"</span>, date_field <span class="op">=</span> <span class="st">"period"</span>, facet_field <span class="op">=</span> <span class="st">"org_code"</span>,
+    improvement_direction <span class="op">=</span> <span class="st">"decrease"</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span>fixed_y_axis_multiple <span class="op">=</span> <span class="cn">FALSE</span>, x_axis_breaks <span class="op">=</span> <span class="st">"3 months"</span>
+       , point_size<span class="op">=</span><span class="fl">2</span>, y_axis_label <span class="op">=</span> <span class="st">"Number of 4-hour A&amp;E target breaches"</span><span class="op">)</span></code></pre></div>
+<p><img src="intro_files/figure-html/facetvignette2-1.png" width="672"></p>
+<p>As the plots are based on <code>ggplot2</code> you can override elements of the styling and theme as additional arguments using <code>theme</code>, or by using <code>theme_override</code> with your new theme elements in a <code>list</code>.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">facet_set</span> <span class="op">&lt;-</span> 
+  <span class="va">ae_attendances</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">org_code</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'RRK'</span>, <span class="st">'RJC'</span>, <span class="st">'RJ7'</span>, <span class="st">'R1K'</span>, <span class="st">'R1H'</span>, <span class="st">'RQM'</span><span class="op">)</span>,
+         <span class="va">type</span> <span class="op">==</span> <span class="fl">1</span>,
+         <span class="va">period</span> <span class="op">&lt;</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html">as.Date</a></span><span class="op">(</span><span class="st">'2018-04-01'</span><span class="op">)</span><span class="op">)</span>
+
+
+<span class="va">a</span> <span class="op">&lt;-</span><span class="fu"><a href="../reference/ptd_spc.html">ptd_spc</a></span><span class="op">(</span><span class="va">facet_set</span>, value_field <span class="op">=</span> <span class="st">"breaches"</span>, date_field <span class="op">=</span> <span class="st">"period"</span>, facet_field <span class="op">=</span> <span class="st">"org_code"</span>,
+    improvement_direction <span class="op">=</span> <span class="st">"decrease"</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span>fixed_y_axis_multiple <span class="op">=</span> <span class="cn">FALSE</span>, x_axis_breaks <span class="op">=</span> <span class="st">"3 months"</span>
+       , point_size<span class="op">=</span><span class="fl">2</span>, y_axis_label <span class="op">=</span> <span class="st">"Number of 4-hour A&amp;E target breaches"</span>
+       <span class="op">)</span>
+
+
+<span class="va">a</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>axis.text.x <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>size<span class="op">=</span><span class="fl">6</span>, angle<span class="op">=</span><span class="fl">45</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<p><img src="intro_files/figure-html/facetvignette3-1.png" width="672"></p>
 </div>
 <div id="come-and-join-us" class="section level2">
 <h2 class="hasAnchor">
