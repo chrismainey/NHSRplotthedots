@@ -88,15 +88,35 @@
 <!-- badges: start -->
 
 <p>This package is built by the NHS-R community to provide tools for drawing statistical process control (SPC) charts. This package supports the NHSE/I programme <a href="https://www.england.nhs.uk/a-focus-on-staff-health-and-wellbeing/publications-and-resources/making-data-count/">‘Making Data Count’</a>, and allows users to draw XmR charts, use change points, and apply rules with summary indicators for when rules are breached.</p>
-<p>This package is in the very early stages of development and is not stable for use at this point.</p>
+<p>Please be aware that this package is in the early stages of development, and features may change.</p>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
-<p>As the package develops there will be a full release onto the main branch but until that time you can install the development version from <a href="https://github.com/">GitHub</a> with:</p>
+<p>As the package develops there will be a full release to CRAN if possible, but until that time you can install from <a href="https://github.com/">GitHub</a> using the <code>remotes</code> package with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># install.packages("remotes")</span>
-<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"https://github.com/nhs-r-community/NHSRplotthedots@development"</span><span class="op">)</span></code></pre></div>
+<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"https://github.com/nhs-r-community/NHSRplotthedots"</span><span class="op">)</span></code></pre></div>
 </div>
+</div>
+<div id="overview" class="section level1">
+<h1 class="hasAnchor">
+<a href="#overview" class="anchor"></a>Overview</h1>
+<p>Welcome to the NHS-R community’s collaborative package for building a specific type of statistical process control (SPC) chart, the XmR chart. We are aiming to support the NHS England and NHS Improvement’s ‘Making Data Count’ programme, please see <a href="https://www.england.nhs.uk/a-focus-on-staff-health-and-wellbeing/publications-and-resources/making-data-count/"> here </a> for more details. The programme encourages boards, managers, and analyst teams to present data in ways that show change over time, and drive better understanding of indicators than ‘RAG’ (red, amber, green) rated board reports often present.</p>
+<p>The help-files, and vignette within this package tell you more about the possible options for controlling the charts, but below is a simple example of the type of chart the package produces. We will use the <code>ae_attendances</code> dataset from the <code>NHSRdatasets</code> package and a bit of <code>tidyverse</code> <code>dplyr</code> code to select some organisations.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://nhs-r-community.github.io/NHSRplotthedots/">NHSRplotthedots</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/nhs-r-community/NHSRdatasets">NHSRdatasets</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">tidyverse</span><span class="op">)</span>
+
+<span class="va">sub_set</span> <span class="op">&lt;-</span> 
+  <span class="va">ae_attendances</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">org_code</span> <span class="op">==</span> <span class="st">'RQM'</span> <span class="op">&amp;</span> <span class="va">type</span> <span class="op">==</span><span class="fl">1</span> <span class="op">&amp;</span> <span class="va">period</span> <span class="op">&lt;</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html">as.Date</a></span><span class="op">(</span><span class="st">'2018-04-01'</span><span class="op">)</span><span class="op">)</span>
+
+<span class="fu">spc</span><span class="op">(</span><span class="va">sub_set</span>, valueField <span class="op">=</span> <span class="st">"breaches"</span>, dateField <span class="op">=</span> <span class="st">"period"</span>
+    , options <span class="op">=</span> <span class="fu">spcOptions</span><span class="op">(</span>improvementDirection <span class="op">=</span> <span class="st">"decrease"</span>
+                           , yAxisLabel <span class="op">=</span> <span class="st">"4-hour wait breaches"</span>
+                           , mainTitle <span class="op">=</span> <span class="st">"SPC of A&amp;E waiting time breaches for RQM"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<p><img src="reference/figures/README-example-1.png" width="100%"></p>
 </div>
 <div id="contribution" class="section level1">
 <h1 class="hasAnchor">
