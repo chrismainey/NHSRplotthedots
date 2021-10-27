@@ -80,7 +80,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">NHSRplotthedots</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
       </span>
     </div>
 
@@ -103,9 +103,15 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
+      <a href="../articles/deviations.html">Deviations from excel defaults</a>
+    </li>
+    <li>
       <a href="../articles/intro.html">Introduction to the `NHSRplotthedots` package</a>
     </li>
   </ul>
+</li>
+<li>
+  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -135,20 +141,21 @@
     <pre class="usage"><span class='fu'>ptd_spc_colours</span><span class='op'>(</span>
   common_cause <span class='op'>=</span> <span class='st'>"#7B7D7D"</span>,
   special_cause_improvement <span class='op'>=</span> <span class='st'>"#289de0"</span>,
+  special_cause_neutral <span class='op'>=</span> <span class='st'>"#361475"</span>,
   special_cause_concern <span class='op'>=</span> <span class='st'>"#fab428"</span>,
   value_line <span class='op'>=</span> <span class='st'>"#7B7D7D"</span>,
   mean_line <span class='op'>=</span> <span class='st'>"#000000"</span>,
   lpl <span class='op'>=</span> <span class='st'>"#7B7D7D"</span>,
   upl <span class='op'>=</span> <span class='st'>"#7B7D7D"</span>,
-  target <span class='op'>=</span> <span class='st'>"#361475"</span>,
-  trajectory <span class='op'>=</span> <span class='st'>"#de1b1b"</span>
+  target <span class='op'>=</span> <span class='st'>"#de1b1b"</span>,
+  trajectory <span class='op'>=</span> <span class='st'>"#361475"</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>common_cause, special_cause_improvement, special_cause_concern</th>
+      <th>common_cause, special_cause_improvement, special_cause_neutral, special_cause_concern</th>
       <td><p>the colour of the points</p></td>
     </tr>
     <tr>
@@ -188,7 +195,7 @@
 
       <footer>
       <div class="copyright">
-  <p>Developed by Christopher Reading, Simon Wellesley-Miller, Zoë Turner, Tom Jemmett, Tom Smith, Chris Mainey.</p>
+  <p>Developed by Christopher Reading, Simon Wellesley-Miller, Zoë Turner, Tom Jemmett, Tom Smith, Chris Mainey, John MacKintosh.</p>
 </div>
 
 <div class="pkgdown">

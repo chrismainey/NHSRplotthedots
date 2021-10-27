@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">NHSRplotthedots</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
       </span>
     </div>
 
@@ -63,9 +63,15 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
+      <a href="articles/deviations.html">Deviations from excel defaults</a>
+    </li>
+    <li>
       <a href="articles/intro.html">Introduction to the `NHSRplotthedots` package</a>
     </li>
   </ul>
+</li>
+<li>
+  <a href="news/index.html">Changelog</a>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right"></ul>
@@ -87,12 +93,12 @@
 </h1></div>
 <!-- badges: start -->
 
-<p>This package is built by the NHS-R community to provide tools for drawing statistical process control (SPC) charts. This package supports the NHSE/I programme <a href="https://www.england.nhs.uk/a-focus-on-staff-health-and-wellbeing/publications-and-resources/making-data-count/">‘Making Data Count’</a>, and allows users to draw XmR charts, use change points, and apply rules with summary indicators for when rules are breached.</p>
+<p>This package is built by the <a href="https://nhsrcommunity.com">NHS-R community</a> to provide tools for drawing statistical process control (SPC) charts. This package supports the NHSE/I programme <a href="https://www.england.nhs.uk/publication/making-data-count/">‘Making Data Count’</a>, and allows users to draw XmR charts, use change points, and apply rules with summary indicators for when rules are breached.</p>
 <p>Please be aware that this package is in the early stages of development, and features may change.</p>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
-<p>As the package develops there will be a full release to CRAN if possible, but until that time you can install from <a href="https://github.com/">GitHub</a> using the <code>remotes</code> package with:</p>
+<p>As the package develops there will be a full release to CRAN if possible, but until that time you can install from <a href="https://github.com/">GitHub</a> using the <a href="https://remotes.r-lib.org">remotes</a> package with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># install.packages("remotes")</span>
 <span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"https://github.com/nhs-r-community/NHSRplotthedots"</span>, build_vignettes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
@@ -101,37 +107,36 @@
 <div id="overview" class="section level1">
 <h1 class="hasAnchor">
 <a href="#overview" class="anchor"></a>Overview</h1>
-<p>Welcome to the NHS-R community’s collaborative package for building a specific type of statistical process control (SPC) chart, the XmR chart. We are aiming to support the NHS England and NHS Improvement’s ‘Making Data Count’ programme, please see <a href="https://www.england.nhs.uk/a-focus-on-staff-health-and-wellbeing/publications-and-resources/making-data-count/"> here </a> for more details. The programme encourages boards, managers, and analyst teams to present data in ways that show change over time, and drive better understanding of indicators than ‘RAG’ (red, amber, green) rated board reports often present.</p>
-<p>The help-files, and vignette within this package tell you more about the possible options for controlling the charts, but below is a simple example of the type of chart the package produces. We will use the <code>ae_attendances</code> dataset from the <code>NHSRdatasets</code> package and a bit of <code>tidyverse</code> <code>dplyr</code> code to select some organisations.</p>
+<p>Welcome to the NHS-R community’s package for building a specific type of statistical process control (SPC) chart, the XmR chart. We are aiming to support the NHS England and NHS Improvement’s ‘Making Data Count’ programme, please see <a href="https://www.england.nhs.uk/publication/making-data-count/">here</a> for more details. The programme encourages boards, managers, and analyst teams to present data in ways that show change over time, and drive better understanding of indicators than ‘RAG’ (red, amber, green) rated board reports often present.</p>
+<p>The help-files, and vignette within this package tell you more about the possible options for controlling the charts, but below is a simple example of the type of chart the package produces. We will use the <code>ae_attendances</code> dataset from the <a href="https://github.com/nhs-r-community/NHSRdatasets">NHSRdatasets</a> package and a bit of <a href="https://dplyr.tidyverse.org">dplyr</a> code to select some organisations.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://nhs-r-community.github.io/NHSRplotthedots/">NHSRplotthedots</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/nhs-r-community/NHSRdatasets">NHSRdatasets</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">tidyverse</span><span class="op">)</span>
 
-<span class="va">sub_set</span> <span class="op">&lt;-</span> 
-  <span class="va">ae_attendances</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">org_code</span> <span class="op">==</span> <span class="st">'RQM'</span> <span class="op">&amp;</span> <span class="va">type</span> <span class="op">==</span><span class="fl">1</span> <span class="op">&amp;</span> <span class="va">period</span> <span class="op">&lt;</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html">as.Date</a></span><span class="op">(</span><span class="st">'2018-04-01'</span><span class="op">)</span><span class="op">)</span>
+<span class="va">sub_set</span> <span class="op">&lt;-</span> <span class="va">ae_attendances</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">org_code</span> <span class="op">==</span> <span class="st">"RQM"</span>, <span class="va">type</span> <span class="op">==</span> <span class="fl">1</span>, <span class="va">period</span> <span class="op">&lt;</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html">as.Date</a></span><span class="op">(</span><span class="st">"2018-04-01"</span><span class="op">)</span><span class="op">)</span>
 
-<span class="fu"><a href="reference/ptd_spc.html">ptd_spc</a></span><span class="op">(</span><span class="va">sub_set</span>, value_field <span class="op">=</span> <span class="st">"breaches"</span>, date_field <span class="op">=</span> <span class="st">"period"</span>,
-        improvement_direction <span class="op">=</span> <span class="st">"decrease"</span><span class="op">)</span></code></pre></div>
+<span class="va">sub_set</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="reference/ptd_spc.html">ptd_spc</a></span><span class="op">(</span>value_field <span class="op">=</span> <span class="va">breaches</span>, date_field <span class="op">=</span> <span class="va">period</span>, improvement_direction <span class="op">=</span> <span class="st">"decrease"</span><span class="op">)</span></code></pre></div>
 <p><img src="reference/figures/README-example-1.png" width="100%"></p>
-<p>This plot is ok on it’s own, but we can specify more control options when we pass it on, using the <code>dplyr</code> pipe function below: <code>%&gt;%</code> to the plot argument.</p>
+<p>This plot is ok on it’s own, but we can specify more control options when we pass it on, using the <a href="https://dplyr.tidyverse.org">dplyr</a> pipe function below: <code>%&gt;%</code> to the plot argument.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="reference/ptd_spc.html">ptd_spc</a></span><span class="op">(</span><span class="va">sub_set</span>, value_field <span class="op">=</span> <span class="st">"breaches"</span>, date_field <span class="op">=</span> <span class="st">"period"</span>,
-      improvement_direction <span class="op">=</span> <span class="st">"decrease"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span>y_axis_label <span class="op">=</span> <span class="st">"4-hour wait breaches"</span>
-       , main_title <span class="op">=</span> <span class="st">"SPC of A&amp;E waiting time breaches for RQM"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">sub_set</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="reference/ptd_spc.html">ptd_spc</a></span><span class="op">(</span>value_field <span class="op">=</span> <span class="va">breaches</span>, date_field <span class="op">=</span> <span class="va">period</span>, improvement_direction <span class="op">=</span> <span class="st">"decrease"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span>y_axis_label <span class="op">=</span> <span class="st">"4-hour wait breaches"</span>,
+       main_title <span class="op">=</span> <span class="st">"SPC of A&amp;E waiting time breaches for RQM"</span><span class="op">)</span></code></pre></div>
 <p><img src="reference/figures/README-unnamed-chunk-3-1.png" width="100%"></p>
-<p>or alternatively:</p>
+<p>or, equivalently:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="reference/ptd_spc.html">ptd_spc</a></span><span class="op">(</span><span class="va">sub_set</span>, value_field <span class="op">=</span> <span class="st">"breaches"</span>, date_field <span class="op">=</span> <span class="st">"period"</span>,
-      improvement_direction <span class="op">=</span> <span class="st">"decrease"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="reference/ptd_create_ggplot.html">ptd_create_ggplot</a></span><span class="op">(</span>y_axis_label <span class="op">=</span> <span class="st">"4-hour wait breaches"</span>
-       , main_title <span class="op">=</span> <span class="st">"SPC of A&amp;E waiting time breaches for RQM"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">sub_set</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="reference/ptd_spc.html">ptd_spc</a></span><span class="op">(</span>value_field <span class="op">=</span> <span class="va">breaches</span>, date_field <span class="op">=</span> <span class="va">period</span>, improvement_direction <span class="op">=</span> <span class="st">"decrease"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="reference/ptd_create_ggplot.html">ptd_create_ggplot</a></span><span class="op">(</span>y_axis_label <span class="op">=</span> <span class="st">"4-hour wait breaches"</span>,
+                    main_title <span class="op">=</span> <span class="st">"SPC of A&amp;E waiting time breaches for RQM"</span><span class="op">)</span></code></pre></div>
 <div id="getting-help" class="section level2">
 <h2 class="hasAnchor">
 <a href="#getting-help" class="anchor"></a>Getting help:</h2>
-<p>To find out more about the ptd_spc function, you can view the help with:</p>
+<p>To find out more about the <code><a href="reference/ptd_spc.html">ptd_spc()</a></code> function, you can view the help with:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="op">?</span><span class="va">ptd_spc</span></code></pre></div>
 <p>Details on the extra plot controls can be found using:</p>
@@ -139,15 +144,15 @@
 <code class="sourceCode R"><span class="op">?</span><span class="va">ptd_create_ggplot</span></code></pre></div>
 <p>To view the vignette (worked example), use:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/vignette.html">vignette</a></span><span class="op">(</span><span class="st">"intro"</span>,package <span class="op">=</span>  <span class="st">"NHSRplotthedots"</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/vignette.html">vignette</a></span><span class="op">(</span><span class="st">"intro"</span>, package <span class="op">=</span> <span class="st">"NHSRplotthedots"</span><span class="op">)</span>
 
-<span class="fu"><a href="https://rdrr.io/r/utils/vignette.html">vignette</a></span><span class="op">(</span>package <span class="op">=</span>  <span class="st">"NHSRplotthedots"</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="https://rdrr.io/r/utils/vignette.html">vignette</a></span><span class="op">(</span>package <span class="op">=</span> <span class="st">"NHSRplotthedots"</span><span class="op">)</span></code></pre></div>
 </div>
 </div>
 <div id="contribution" class="section level1">
 <h1 class="hasAnchor">
 <a href="#contribution" class="anchor"></a>Contribution</h1>
-<p>This is an NHS-R Community project that is open for anyone to contribute to in any way that they are able. If you want to learn more about this please join the discussion at <a href="https://nhsrcommunity.slack.com/">the NHS-R Community Slack group</a> and the specific channel # proj-shiny-spc.</p>
+<p>This is an NHS-R Community project that is open for anyone to contribute to in any way that they are able. If you want to learn more about this please join the discussion at <a href="https://nhsrcommunity.slack.com/">the NHS-R Community Slack group</a> and the specific channel <a href="https://nhsrcommunity.slack.com/archives/CSVD4SYF3">#proj-shiny-spc</a>.</p>
 </div>
 
   </div>
@@ -169,6 +174,7 @@
 <li>Tom Jemmett <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0002-6943-2990" target="orcid.widget" aria-label="ORCID"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
 <li>Tom Smith <br><small class="roles"> Author </small>  </li>
 <li>Chris Mainey <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0002-3018-6171" target="orcid.widget" aria-label="ORCID"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+<li>John MacKintosh <br><small class="roles"> Author </small>  </li>
 <li><a href="authors.html">All authors...</a></li>
 </ul>
 </div>
@@ -176,9 +182,9 @@
   <div class="dev-status">
 <h2>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://www.tidyverse.org/lifecycle/#experimental"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: experimental"></a></li>
-<li><a href="https://codecov.io/gh/nhs-r-community/NHSRplotthedots?branch=main"><img src="https://codecov.io/gh/nhs-r-community/NHSRplotthedots/branch/main/graph/badge.svg" alt="Codecov test coverage"></a></li>
+<li><a href="https://lifecycle.r-lib.org/articles/stages.html#stable"><img src="https://img.shields.io/badge/lifecycle-stable-brightgreen.svg" alt="Lifecycle: stable"></a></li>
 <li><a href="https://github.com/nhs-r-community/NHSRplotthedots/actions"><img src="https://github.com/nhs-r-community/NHSRplotthedots/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="https://app.codecov.io/gh/nhs-r-community/NHSRplotthedots?branch=main"><img src="https://codecov.io/gh/nhs-r-community/NHSRplotthedots/branch/main/graph/badge.svg" alt="Codecov test coverage"></a></li>
 </ul>
 </div>
 </div>
@@ -186,7 +192,7 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Christopher Reading, Simon Wellesley-Miller, Zoë Turner, Tom Jemmett, Tom Smith, Chris Mainey.</p>
+  <p>Developed by Christopher Reading, Simon Wellesley-Miller, Zoë Turner, Tom Jemmett, Tom Smith, Chris Mainey, John MacKintosh.</p>
 </div>
 
 <div class="pkgdown">

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Create ggplot2 — ptd_create_ggplot • NHSRplotthedots</title>
+<title>Target — ptd_target • NHSRplotthedots</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,8 +46,14 @@
 
 
 
-<meta property="og:title" content="Create ggplot2 — ptd_create_ggplot" />
-<meta property="og:description" content="Creates a ggplot2 object using the parameters passed in." />
+<meta property="og:title" content="Target — ptd_target" />
+<meta property="og:description" content="Produces an object that can be used for adding Targets to an SPC chart. This method provides two different ways to
+add a target:
+You can either provide a single value, which will apply the same target to every facet of an SPC
+You can provide named values of targets, where the names correspond to the names of the facets, in order to
+have different targets for each facet
+
+" />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -129,122 +135,88 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Create ggplot2</h1>
+    <h1>Target</h1>
     
-    <div class="hidden name"><code>ptd_create_ggplot.Rd</code></div>
+    <div class="hidden name"><code>ptd_target.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Creates a ggplot2 object using the parameters passed in.</p>
+    <p>Produces an object that can be used for adding Targets to an SPC chart. This method provides two different ways to
+add a target:</p><ol>
+<li><p>You can either provide a single value, which will apply the same target to every facet of an SPC</p></li>
+<li><p>You can provide named values of targets, where the names correspond to the names of the facets, in order to
+have different targets for each facet</p></li>
+</ol>
+
     </div>
 
-    <pre class="usage"><span class='fu'>ptd_create_ggplot</span><span class='op'>(</span>
-  <span class='va'>x</span>,
-  point_size <span class='op'>=</span> <span class='fl'>4</span>,
-  percentage_y_axis <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  <span class='va'>main_title</span>,
-  <span class='va'>x_axis_label</span>,
-  <span class='va'>y_axis_label</span>,
-  fixed_x_axis_multiple <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  fixed_y_axis_multiple <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  x_axis_date_format <span class='op'>=</span> <span class='st'>"%d/%m/%y"</span>,
-  x_axis_breaks <span class='op'>=</span> <span class='cn'>NULL</span>,
-  y_axis_breaks <span class='op'>=</span> <span class='cn'>NULL</span>,
-  icons_size <span class='op'>=</span> <span class='fl'>8L</span>,
-  icons_position <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"top right"</span>, <span class='st'>"bottom right"</span>, <span class='st'>"bottom left"</span>, <span class='st'>"top left"</span>, <span class='st'>"none"</span><span class='op'>)</span>,
-  colours <span class='op'>=</span> <span class='fu'><a href='ptd_spc_colours.html'>ptd_spc_colours</a></span><span class='op'>(</span><span class='op'>)</span>,
-  theme_override <span class='op'>=</span> <span class='cn'>NULL</span>,
-  break_lines <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"both"</span>, <span class='st'>"limits"</span>, <span class='st'>"process"</span>, <span class='st'>"none"</span><span class='op'>)</span>,
-  <span class='va'>...</span>
-<span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>ptd_target</span><span class='op'>(</span><span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>x</th>
-      <td><p>an object created by <code><a href='ptd_spc.html'>ptd_spc()</a></code></p></td>
-    </tr>
-    <tr>
-      <th>point_size</th>
-      <td><p>Specify the plotting point size for the ggplot output. Default is 2.5.</p></td>
-    </tr>
-    <tr>
-      <th>percentage_y_axis</th>
-      <td><p>Specify whether the y axis values are percentages. Accepted values are TRUE for percentage y
-axis, FALSE for integer y axis. Defaults to FALSE.</p></td>
-    </tr>
-    <tr>
-      <th>main_title</th>
-      <td><p>Specify a character string value for the ggplot title.</p></td>
-    </tr>
-    <tr>
-      <th>x_axis_label</th>
-      <td><p>Specify a character string value for the x axis title.</p></td>
-    </tr>
-    <tr>
-      <th>y_axis_label</th>
-      <td><p>Specify a character string value for the y axis title.</p></td>
-    </tr>
-    <tr>
-      <th>fixed_x_axis_multiple</th>
-      <td><p>Specify whether, if producing a faceted spc, x axis should be fixed for all facet plots.
-Accepted values are TRUE for fixed x axes or FALSE for individual x axes.</p></td>
-    </tr>
-    <tr>
-      <th>fixed_y_axis_multiple</th>
-      <td><p>Specify whether, if producing a faceted spc, y axis should be fixed for all facet plots.
-Accepted values are TRUE for fixed y axes or FALSE for individual y axes.</p></td>
-    </tr>
-    <tr>
-      <th>x_axis_date_format</th>
-      <td><p>Specify how dates on the x axis should be displayed. Format should be provided
-as a character string using 'd m Y' etc syntax.</p></td>
-    </tr>
-    <tr>
-      <th>x_axis_breaks</th>
-      <td><p>Specify an interval value for breaks on the x axis. Value should be a character string
-expressing interval length and type, e.g. "3 months", "7 days".</p></td>
-    </tr>
-    <tr>
-      <th>y_axis_breaks</th>
-      <td><p>Specify an interval value for breaks on the y axis. Value should be a numeric vector of length
-1, either an integer for integer scales or a decimal value for percentage scales. This option is ignored if
-faceting is in use.</p></td>
-    </tr>
-    <tr>
-      <th>icons_size</th>
-      <td><p>The size of the icons, defined in terms of font size. Defaults to 8.</p></td>
-    </tr>
-    <tr>
-      <th>icons_position</th>
-      <td><p>Where to show the icons, either "top right" (default), "bottom right", "bottom left",
-"top left", or "none".</p></td>
-    </tr>
-    <tr>
-      <th>colours</th>
-      <td><p>Specify the colours to use in the plot, use the <code><a href='ptd_spc_colours.html'>ptd_spc_colours()</a></code> function to change defaults.</p></td>
-    </tr>
-    <tr>
-      <th>theme_override</th>
-      <td><p>Specify a list containing ggplot theme elements which can be used to override the default
-appearance of the plot.</p></td>
-    </tr>
-    <tr>
-      <th>break_lines</th>
-      <td><p>whether to break lines when a rebase happens. Defaults to "both", but can break just "limits"
-lines, "process" lines, or "none".</p></td>
-    </tr>
-    <tr>
       <th>...</th>
-      <td><p>currently ignored</p></td>
+      <td><p>either a single values, or, named values of targets. See examples.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>The ggplot2 object</p>
+    <p>returns either:</p><ul>
+<li><p>a single numeric value, in this case all facets in the plot will use this target value</p></li>
+<li><p>a named list of single numeric values, where each item is named as for one of the facet's in the plot. If a facet
+isn't specified then it will not have a target</p></li>
+</ul>
 
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>This function is a helper to provide data in the correct format for use with <code><a href='ptd_spc.html'>ptd_spc()</a></code>. See <strong>Value</strong>
+section for details of return type. If you are trying to do something like <code><a href='ptd_spc.html'>ptd_spc(list_of_values)</a></code> then you can
+skip using the function and just use <code>list_of_values</code>, so long as the list meets the requirements as listed above.</p>
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='co'># if you aren't using a facetted chart, or you want to use the same target for each facet, you</span>
+<span class='co'># can simply call this method with a single value. For example, to use a target of 90%:</span>
+
+<span class='fu'>ptd_target</span><span class='op'>(</span><span class='fl'>0.9</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] 0.9</div><div class='input'>
+<span class='co'># if you are using a facetted chart, and wish to use a different target for each facet, then you</span>
+<span class='co'># can call this method, naming each value with the name of the facet. Any facet that isn't listed</span>
+<span class='co'># will not have a target applied to it.</span>
+
+<span class='co'># For example, to apply a target of 25 to the "a" facet and 10 to the "b" facet:</span>
+
+<span class='fu'>ptd_target</span><span class='op'>(</span>
+  <span class='st'>"a"</span> <span class='op'>=</span> <span class='fl'>25</span>,
+  <span class='st'>"b"</span> <span class='op'>=</span> <span class='fl'>10</span>
+<span class='op'>)</span>
+</div><div class='output co'>#&gt; $a
+#&gt; [1] 25
+#&gt; 
+#&gt; $b
+#&gt; [1] 10
+#&gt; </div><div class='input'>
+<span class='co'># If you already have your data in a list, you do not need to use ptd_target(). But, if you</span>
+<span class='co'># wanted to check that your values are valid, you could call it like so:</span>
+
+<span class='va'>my_targets</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='st'>"a"</span> <span class='op'>=</span> <span class='fl'>25</span>, <span class='st'>"b"</span> <span class='op'>=</span> <span class='fl'>10</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/base/do.call.html'>do.call</a></span><span class='op'>(</span><span class='va'>ptd_target</span>, <span class='va'>my_targets</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; $a
+#&gt; [1] 25
+#&gt; 
+#&gt; $b
+#&gt; [1] 10
+#&gt; </div><div class='input'>
+<span class='co'># or, if your targets are in a numeric vector</span>
+<span class='va'>my_targets</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"a"</span> <span class='op'>=</span> <span class='fl'>25</span>, <span class='st'>"b"</span> <span class='op'>=</span> <span class='fl'>10</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/base/do.call.html'>do.call</a></span><span class='op'>(</span><span class='va'>ptd_target</span>, <span class='fu'><a href='https://rdrr.io/r/base/list.html'>as.list</a></span><span class='op'>(</span><span class='va'>my_targets</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; $a
+#&gt; [1] 25
+#&gt; 
+#&gt; $b
+#&gt; [1] 10
+#&gt; </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
