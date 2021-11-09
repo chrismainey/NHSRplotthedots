@@ -54,7 +54,6 @@ You can provide named values of targets, where the names correspond to the names
 have different targets for each facet
 
 " />
-<meta property="og:image" content="/logo.png" />
 
 
 
@@ -86,7 +85,7 @@ have different targets for each facet
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">NHSRplotthedots</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9000</span>
       </span>
     </div>
 
@@ -114,6 +113,9 @@ have different targets for each facet
     <li>
       <a href="../articles/intro.html">Introduction to the `NHSRplotthedots` package</a>
     </li>
+    <li>
+      <a href="../articles/number-of-points-required.html">Number of points required</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -121,7 +123,12 @@ have different targets for each facet
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/nhs-r-community/NHSRplotthedots/">
+    <span class="fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -136,7 +143,7 @@ have different targets for each facet
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Target</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/nhs-r-community/NHSRplotthedots/blob/master/R/ptd_target.R'><code>R/ptd_target.R</code></a></small>
     <div class="hidden name"><code>ptd_target.Rd</code></div>
     </div>
 
@@ -172,51 +179,55 @@ isn't specified then it will not have a target</p></li>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>This function is a helper to provide data in the correct format for use with <code><a href='ptd_spc.html'>ptd_spc()</a></code>. See <strong>Value</strong>
-section for details of return type. If you are trying to do something like <code><a href='ptd_spc.html'>ptd_spc(list_of_values)</a></code> then you can
+section for details of return type. If you are trying to do something like <code>ptd_spc(list_of_values)</code> then you can
 skip using the function and just use <code>list_of_values</code>, so long as the list meets the requirements as listed above.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># if you aren't using a facetted chart, or you want to use the same target for each facet, you</span>
-<span class='co'># can simply call this method with a single value. For example, to use a target of 90%:</span>
-
-<span class='fu'>ptd_target</span><span class='op'>(</span><span class='fl'>0.9</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] 0.9</div><div class='input'>
-<span class='co'># if you are using a facetted chart, and wish to use a different target for each facet, then you</span>
-<span class='co'># can call this method, naming each value with the name of the facet. Any facet that isn't listed</span>
-<span class='co'># will not have a target applied to it.</span>
-
-<span class='co'># For example, to apply a target of 25 to the "a" facet and 10 to the "b" facet:</span>
-
-<span class='fu'>ptd_target</span><span class='op'>(</span>
-  <span class='st'>"a"</span> <span class='op'>=</span> <span class='fl'>25</span>,
-  <span class='st'>"b"</span> <span class='op'>=</span> <span class='fl'>10</span>
-<span class='op'>)</span>
-</div><div class='output co'>#&gt; $a
-#&gt; [1] 25
-#&gt; 
-#&gt; $b
-#&gt; [1] 10
-#&gt; </div><div class='input'>
-<span class='co'># If you already have your data in a list, you do not need to use ptd_target(). But, if you</span>
-<span class='co'># wanted to check that your values are valid, you could call it like so:</span>
-
-<span class='va'>my_targets</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='st'>"a"</span> <span class='op'>=</span> <span class='fl'>25</span>, <span class='st'>"b"</span> <span class='op'>=</span> <span class='fl'>10</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/base/do.call.html'>do.call</a></span><span class='op'>(</span><span class='va'>ptd_target</span>, <span class='va'>my_targets</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; $a
-#&gt; [1] 25
-#&gt; 
-#&gt; $b
-#&gt; [1] 10
-#&gt; </div><div class='input'>
-<span class='co'># or, if your targets are in a numeric vector</span>
-<span class='va'>my_targets</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"a"</span> <span class='op'>=</span> <span class='fl'>25</span>, <span class='st'>"b"</span> <span class='op'>=</span> <span class='fl'>10</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/base/do.call.html'>do.call</a></span><span class='op'>(</span><span class='va'>ptd_target</span>, <span class='fu'><a href='https://rdrr.io/r/base/list.html'>as.list</a></span><span class='op'>(</span><span class='va'>my_targets</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; $a
-#&gt; [1] 25
-#&gt; 
-#&gt; $b
-#&gt; [1] 10
-#&gt; </div></pre>
+    <pre class="examples"><span class='r-in'><span class='co'># if you aren't using a facetted chart, or you want to use the same target for each facet, you</span></span>
+<span class='r-in'><span class='co'># can simply call this method with a single value. For example, to use a target of 90%:</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='fu'>ptd_target</span><span class='op'>(</span><span class='fl'>0.9</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 0.9</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># if you are using a facetted chart, and wish to use a different target for each facet, then you</span></span>
+<span class='r-in'><span class='co'># can call this method, naming each value with the name of the facet. Any facet that isn't listed</span></span>
+<span class='r-in'><span class='co'># will not have a target applied to it.</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># For example, to apply a target of 25 to the "a" facet and 10 to the "b" facet:</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='fu'>ptd_target</span><span class='op'>(</span></span>
+<span class='r-in'>  <span class='st'>"a"</span> <span class='op'>=</span> <span class='fl'>25</span>,</span>
+<span class='r-in'>  <span class='st'>"b"</span> <span class='op'>=</span> <span class='fl'>10</span></span>
+<span class='r-in'><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $a</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 25</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $b</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 10</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># If you already have your data in a list, you do not need to use ptd_target(). But, if you</span></span>
+<span class='r-in'><span class='co'># wanted to check that your values are valid, you could call it like so:</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>my_targets</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='st'>"a"</span> <span class='op'>=</span> <span class='fl'>25</span>, <span class='st'>"b"</span> <span class='op'>=</span> <span class='fl'>10</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/do.call.html'>do.call</a></span><span class='op'>(</span><span class='va'>ptd_target</span>, <span class='va'>my_targets</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $a</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 25</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $b</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 10</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># or, if your targets are in a numeric vector</span></span>
+<span class='r-in'><span class='va'>my_targets</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"a"</span> <span class='op'>=</span> <span class='fl'>25</span>, <span class='st'>"b"</span> <span class='op'>=</span> <span class='fl'>10</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/do.call.html'>do.call</a></span><span class='op'>(</span><span class='va'>ptd_target</span>, <span class='fu'><a href='https://rdrr.io/r/base/list.html'>as.list</a></span><span class='op'>(</span><span class='va'>my_targets</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $a</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 25</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $b</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 10</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

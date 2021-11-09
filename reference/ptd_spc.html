@@ -48,7 +48,6 @@
 
 <meta property="og:title" content="SPC Plotting Function — ptd_spc" />
 <meta property="og:description" content="ptd_spc returns a plot object or data table with SPC values using NHSI 'plot the dots' logic." />
-<meta property="og:image" content="/logo.png" />
 
 
 
@@ -80,7 +79,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">NHSRplotthedots</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9000</span>
       </span>
     </div>
 
@@ -108,6 +107,9 @@
     <li>
       <a href="../articles/intro.html">Introduction to the `NHSRplotthedots` package</a>
     </li>
+    <li>
+      <a href="../articles/number-of-points-required.html">Number of points required</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -115,7 +117,12 @@
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/nhs-r-community/NHSRplotthedots/">
+    <span class="fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -130,7 +137,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>SPC Plotting Function</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/nhs-r-community/NHSRplotthedots/blob/master/R/ptd_spc.R'><code>R/ptd_spc.R</code></a></small>
     <div class="hidden name"><code>ptd_spc.Rd</code></div>
     </div>
 
@@ -220,43 +227,49 @@ across Information Department reporting, according to the 'plot the dots'
 logic produced by NHSI. The function can return either a plot or data frame.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/nhs-r-community/NHSRdatasets'>NHSRdatasets</a></span><span class='op'>)</span>
-<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://dplyr.tidyverse.org'>dplyr</a></span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'></span>
-#&gt; <span class='message'>Attaching package: ‘dplyr’</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:stats’:</span>
-#&gt; <span class='message'></span>
-#&gt; <span class='message'>    filter, lag</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:base’:</span>
-#&gt; <span class='message'></span>
-#&gt; <span class='message'>    intersect, setdiff, setequal, union</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"ae_attendances"</span><span class='op'>)</span>
-
-<span class='co'># Pick a trust at random to look at their data for two years</span>
-<span class='va'>trust1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/subset.html'>subset</a></span><span class='op'>(</span><span class='va'>ae_attendances</span>, <span class='va'>org_code</span> <span class='op'>==</span> <span class='st'>"RJZ"</span> <span class='op'>&amp;</span> <span class='va'>type</span> <span class='op'>==</span> <span class='fl'>1</span><span class='op'>)</span>
-
-<span class='co'># Basic chart with improvement direction decreasing</span>
-<span class='fu'>ptd_spc</span><span class='op'>(</span><span class='va'>trust1</span>,
-  value_field <span class='op'>=</span> <span class='va'>breaches</span>, date_field <span class='op'>=</span> <span class='va'>period</span>,
-  improvement_direction <span class='op'>=</span> <span class='st'>"decrease"</span>
-<span class='op'>)</span>
-</div><div class='img'><img src='ptd_spc-1.png' alt='' width='700' height='433' /></div><div class='input'>
-<span class='co'># Pick a few trust, and plot individually using facet</span>
-<span class='co'># Also set the x-axis scale to vary for each and date groups to 3 months</span>
-<span class='va'>orgs</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"RAS"</span>, <span class='st'>"RJZ"</span>, <span class='st'>"RR1"</span>, <span class='st'>"RJC"</span>, <span class='st'>"RQ1"</span><span class='op'>)</span>
-<span class='va'>trusts4</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>ae_attendances</span>, <span class='va'>org_code</span> <span class='op'>%in%</span> <span class='va'>orgs</span>, <span class='va'>type</span> <span class='op'>==</span> <span class='fl'>1</span><span class='op'>)</span>
-
-<span class='va'>s</span> <span class='op'>&lt;-</span> <span class='fu'>ptd_spc</span><span class='op'>(</span><span class='va'>trusts4</span>,
-  value_field <span class='op'>=</span> <span class='va'>breaches</span>, date_field <span class='op'>=</span> <span class='va'>period</span>, facet_field <span class='op'>=</span> <span class='va'>org_code</span>,
-  improvement_direction <span class='op'>=</span> <span class='st'>"decrease"</span>
-<span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>s</span>, fixed_y_axis_multiple <span class='op'>=</span> <span class='cn'>FALSE</span>, x_axis_breaks <span class='op'>=</span> <span class='st'>"3 months"</span><span class='op'>)</span>
-</div><div class='img'><img src='ptd_spc-2.png' alt='' width='700' height='433' /></div><div class='input'>
-<span class='co'># Save the first chart as an object this time then alter the ggplot theme</span>
-<span class='va'>my_spc</span> <span class='op'>&lt;-</span> <span class='fu'>ptd_spc</span><span class='op'>(</span><span class='va'>trust1</span>,
-  value_field <span class='op'>=</span> <span class='st'>"breaches"</span>, date_field <span class='op'>=</span> <span class='st'>"period"</span>,
-  improvement_direction <span class='op'>=</span> <span class='st'>"decrease"</span>
-<span class='op'>)</span>
-
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>my_spc</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'>ggplot2</span><span class='fu'>::</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggtheme.html'>theme_classic</a></span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='img'><img src='ptd_spc-3.png' alt='' width='700' height='433' /></div></pre>
+    <pre class="examples"><span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/nhs-r-community/NHSRdatasets'>NHSRdatasets</a></span><span class='op'>)</span></span>
+<span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://dplyr.tidyverse.org'>dplyr</a></span><span class='op'>)</span></span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Attaching package: ‘dplyr’</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> The following objects are masked from ‘package:stats’:</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>     filter, lag</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> The following objects are masked from ‘package:base’:</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>     intersect, setdiff, setequal, union</span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"ae_attendances"</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Pick a trust at random to look at their data for two years</span></span>
+<span class='r-in'><span class='va'>trust1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/subset.html'>subset</a></span><span class='op'>(</span><span class='va'>ae_attendances</span>, <span class='va'>org_code</span> <span class='op'>==</span> <span class='st'>"RJZ"</span> <span class='op'>&amp;</span> <span class='va'>type</span> <span class='op'>==</span> <span class='fl'>1</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Basic chart with improvement direction decreasing</span></span>
+<span class='r-in'><span class='fu'>ptd_spc</span><span class='op'>(</span><span class='va'>trust1</span>,</span>
+<span class='r-in'>  value_field <span class='op'>=</span> <span class='va'>breaches</span>, date_field <span class='op'>=</span> <span class='va'>period</span>,</span>
+<span class='r-in'>  improvement_direction <span class='op'>=</span> <span class='st'>"decrease"</span></span>
+<span class='r-in'><span class='op'>)</span></span>
+<span class='r-plt img'><img src='ptd_spc-1.png' alt='' width='700' height='433' /></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Pick a few trust, and plot individually using facet</span></span>
+<span class='r-in'><span class='co'># Also set the x-axis scale to vary for each and date groups to 3 months</span></span>
+<span class='r-in'><span class='va'>orgs</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"RAS"</span>, <span class='st'>"RJZ"</span>, <span class='st'>"RR1"</span>, <span class='st'>"RJC"</span>, <span class='st'>"RQ1"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>trusts4</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>ae_attendances</span>, <span class='va'>org_code</span> <span class='op'><a href='https://rdrr.io/r/base/match.html'>%in%</a></span> <span class='va'>orgs</span>, <span class='va'>type</span> <span class='op'>==</span> <span class='fl'>1</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>s</span> <span class='op'>&lt;-</span> <span class='fu'>ptd_spc</span><span class='op'>(</span><span class='va'>trusts4</span>,</span>
+<span class='r-in'>  value_field <span class='op'>=</span> <span class='va'>breaches</span>, date_field <span class='op'>=</span> <span class='va'>period</span>, facet_field <span class='op'>=</span> <span class='va'>org_code</span>,</span>
+<span class='r-in'>  improvement_direction <span class='op'>=</span> <span class='st'>"decrease"</span></span>
+<span class='r-in'><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>s</span>, fixed_y_axis_multiple <span class='op'>=</span> <span class='cn'>FALSE</span>, x_axis_breaks <span class='op'>=</span> <span class='st'>"3 months"</span><span class='op'>)</span></span>
+<span class='r-plt img'><img src='ptd_spc-2.png' alt='' width='700' height='433' /></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Save the first chart as an object this time then alter the ggplot theme</span></span>
+<span class='r-in'><span class='va'>my_spc</span> <span class='op'>&lt;-</span> <span class='fu'>ptd_spc</span><span class='op'>(</span><span class='va'>trust1</span>,</span>
+<span class='r-in'>  value_field <span class='op'>=</span> <span class='st'>"breaches"</span>, date_field <span class='op'>=</span> <span class='st'>"period"</span>,</span>
+<span class='r-in'>  improvement_direction <span class='op'>=</span> <span class='st'>"decrease"</span></span>
+<span class='r-in'><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>my_spc</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'>ggplot2</span><span class='fu'>::</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggtheme.html'>theme_classic</a></span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-plt img'><img src='ptd_spc-3.png' alt='' width='700' height='433' /></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
